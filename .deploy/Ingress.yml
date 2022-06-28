@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cluster-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /client(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: client-app-service
+                port:
+                  number: 80
+          - path: /market(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: market-app-service
+                port:
+                  number: 80

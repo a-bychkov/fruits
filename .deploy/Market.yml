@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: market-app
+  labels:
+    app: market-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: market-app
+  template:
+    metadata:
+      labels:
+        app: market-app
+    spec:
+      containers:
+        - name: market-app
+          image: abychkov117/market-app:1.5
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: market-app-service
+spec:
+  selector:
+    app: market-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
