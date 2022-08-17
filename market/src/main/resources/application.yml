@@ -1,18 +1,18 @@
 server:
-  port: 8080
+  port: 8081
 spring:
+  profiles:
+    active: "local"
   application:
-    name: market
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://${DB_HOST}:5432/${DB_NAME}
-#    username: {POSTGRES_USER}
-#    password: {POSTGRES_PASSWORD}
-#    hikari:
-#      initialization-fail-timeout: 0
-#jpa:
-#  database-platform: org.hibernate.dialect.PostgresPlusDialect
-#  generate-ddl: true
-#  show-sql: true
-#  hibernate:
-#    ddl-auto: create
+    name: market-app
+app:
+  client-service-url: localhost
+---
+spring:
+  config:
+    activate:
+      on-profile: cluster
+server:
+  port: 8080
+app:
+  client-service-url: client-app-service

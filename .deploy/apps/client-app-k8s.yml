@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: client-app
-          image: abychkov117/client-app:1.5
+          image: abychkov117/client-app:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
 ---

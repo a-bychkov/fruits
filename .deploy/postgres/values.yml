@@ -1,0 +1,11 @@
+global:
+  postgresql:
+    auth:
+      username: testuser
+      password: testpass
+      database: testdb
+primary:
+  persistence:
+    existingClaim: postgres-pvc
+volumePermissions:
+  enabled: true

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+  labels:
+    app: logstash
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+    spec:
+      containers:
+        - name: logstash
+          image: abychkov117/logstash_image:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5044
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logstash-service
+spec:
+  selector:
+    app: logstash
+  ports:
+    - name: api
+      protocol: TCP
+      port: 5044
+      targetPort: 5044
+    - name: log-receiver
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
