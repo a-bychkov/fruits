@@ -1,0 +1,31 @@
+pipeline{
+    agent any
+    tools{
+        maven 'mvn_3.8.6'
+    }
+    stages{
+        stage('Build maven'){
+            steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'Github-access-token', url: 'https://github.com/a-bychkov/fruits.git']]])
+                sh 'cd ./client && mvn clean package'
+            }
+        }
+        stage('Build docker image'){
+            steps{
+                script{
+                    sh 'cd ./client && docker build -t abychkov117/client-app:latest .'
+                }
+            }
+        }
+        stage('Push image to Dockerhub'){
+           steps{
+               script{
+                    withCredentials([string(credentialsId: 'dockerhub_pass', variable: 'dockerhub_pass')]) {
+                        sh 'docker login -u abychkov117 -p ${dockerhub_pass}'
+                    }
+                   sh 'docker push abychkov117/client-app:latest'
+               }
+           }
+        }
+    }
+}
