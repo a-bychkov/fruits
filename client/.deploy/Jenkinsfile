@@ -1,31 +1,43 @@
 pipeline{
-    agent any
-    tools{
-        maven 'mvn_3.8.6'
+    agent {
+        kubernetes {
+            label 'jenkins-agent' //all your pods will be named with this prefix, followed by a unique id
+            idleMinutes 5 //how long the pod will live after no jobs have run on it
+            yamlFile './client/.deploy/kubernetes-agent-pod.yml' //path to the pod definition relative to the root of our project
+            defaultContainer 'mixed-agent' //define a default container if more than a few stages use it, will default to jnlp container
+        }
     }
     stages{
         stage('Build maven'){
             steps{
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'Github-access-token', url: 'https://github.com/a-bychkov/fruits.git']]])
-                sh 'cd ./client && mvn clean package'
+                echo "Build jar with maven"
+                sh "cd ./client && mvn clean package"
             }
         }
         stage('Build docker image'){
             steps{
-                script{
-                    sh 'cd ./client && docker build -t abychkov117/client-app:latest .'
-                }
+                echo "Build docker image of Client service"
+                sh "cd ./client/.deploy && docker build -t abychkov117/client-app:latest ."
             }
         }
         stage('Push image to Dockerhub'){
-           steps{
-               script{
-                    withCredentials([string(credentialsId: 'dockerhub_pass', variable: 'dockerhub_pass')]) {
-                        sh 'docker login -u abychkov117 -p ${dockerhub_pass}'
+            steps{
+                container('docker') {
+                    script{
+                        echo "Push docker image to Dockerhub registry"
+                        withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'dockerhub-pass')]) {
+                            sh "docker login -u abychkov117 -p ${dockerhub-pass}"
+                        }
+                        sh "docker push abychkov117/client-app:latest"
                     }
-                   sh 'docker push abychkov117/client-app:latest'
-               }
-           }
+                }
+            }
+        }
+        stage('Deploy client-app to Kubernetes'){
+            steps{
+                echo "Deploy service manifest files to Kubernetes"
+                sh "cd ./client/.deploy && kubectl apply -f client-app-k8s.yml"
+            }
         }
     }
 }
