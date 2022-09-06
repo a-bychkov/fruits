@@ -12,10 +12,10 @@ spec:
           cpu: "500m"
         limits:
           memory: "8Gi"
-        volumeMounts:
-          - name: docker
-            mountPath: /var/run/docker.sock #use the k8s host docker engine
-    volumes:
-      - name: docker
-        hostPath:
-          path: /var/run/docker.sock
+      volumeMounts:
+        - name: docker
+          mountPath: /var/run/docker.sock #use the k8s host docker engine
+  volumes:
+    - name: docker
+      hostPath:
+        path: /var/run/docker.sock
