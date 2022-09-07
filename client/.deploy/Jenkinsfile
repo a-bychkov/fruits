@@ -7,35 +7,32 @@ pipeline{
             defaultContainer 'mixed-agent' //define a default container if more than a few stages use it, will default to jnlp container
         }
     }
+    environment{
+    	dockerhub=credentials('dockerhub')
+    }
     stages{
         stage('Build maven'){
             steps{
-                echo "Build jar with maven"
+                echo "=====>Build jar with maven"
                 sh "cd ./client && mvn clean package"
             }
         }
         stage('Build docker image'){
             steps{
-                echo "Build docker image of Client service"
-                sh "cd ./client/.deploy && docker build -t abychkov117/client-app:latest ."
+                echo "=====>Build docker image of Client service"
+                sh "cd ./client && docker build -t abychkov117/client-app:latest ."
             }
         }
         stage('Push image to Dockerhub'){
             steps{
-                container('docker') {
-                    script{
-                        echo "Push docker image to Dockerhub registry"
-                        withCredentials([string(credentialsId: 'dockerhub-pass', variable: 'dockerhub-pass')]) {
-                            sh "docker login -u abychkov117 -p ${dockerhub-pass}"
-                        }
-                        sh "docker push abychkov117/client-app:latest"
-                    }
-                }
+                echo "=====>Push docker image to Dockerhub registry"
+                sh "echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin"
+                sh "docker push abychkov117/client-app:latest"
             }
         }
         stage('Deploy client-app to Kubernetes'){
             steps{
-                echo "Deploy service manifest files to Kubernetes"
+                echo "=====>Deploy service manifest files to Kubernetes"
                 sh "cd ./client/.deploy && kubectl apply -f client-app-k8s.yml"
             }
         }
