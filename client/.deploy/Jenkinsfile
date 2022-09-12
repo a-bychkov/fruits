@@ -13,27 +13,33 @@ pipeline{
     stages{
         stage('Build maven'){
             steps{
-                echo "=====>Build jar with maven"
+                echo "=====>Building jar with maven"
                 sh "cd ./client && mvn clean package"
             }
         }
         stage('Build docker image'){
             steps{
-                echo "=====>Build docker image of Client service"
+                echo "=====>Building docker image of Client service"
                 sh "cd ./client && docker build -t abychkov117/client-app:latest ."
             }
         }
         stage('Push image to Dockerhub'){
             steps{
-                echo "=====>Push docker image to Dockerhub registry"
+                echo "=====>Pushing docker image to Dockerhub registry"
                 sh "echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin"
                 sh "docker push abychkov117/client-app:latest"
             }
         }
         stage('Deploy client-app to Kubernetes'){
             steps{
-                echo "=====>Deploy service manifest files to Kubernetes"
+                echo "=====>Deploying service manifest files to Kubernetes"
                 sh "cd ./client/.deploy && kubectl apply -f client-app-k8s.yml"
+            }
+        }
+        stage('Install helm charts'){
+            steps{
+                echo "=====>Installing helm Mysql chart"
+                sh "cd ./.deploy/mysql && helm install -f values.yml mysql bitnami/mysql"
             }
         }
     }
