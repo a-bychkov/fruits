@@ -1,0 +1,7 @@
+auth:
+  username: user
+  password: password
+  database: mydb
+architecture: replication
+secondary:
+  replicaCount: 1
