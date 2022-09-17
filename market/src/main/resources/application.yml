@@ -1,18 +1,37 @@
 server:
   port: 8081
 spring:
-  profiles:
-    active: "local"
   application:
     name: market-app
+  datasource:
+    url: jdbc:mysql://localhost:3306/mydb
+    username: user
+    password: password
+  jpa:
+    database: MYSQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  liquibase:
+    change-log: classpath:db/changelog/liquibase-changelog.yml
+  kafka:
+    bootstrap-servers: localhost:9092
+    topics: market_topic
 app:
-  client-service-url: localhost
+  client-service-url: localhost:8080
 ---
+server:
+  port: 8080
 spring:
   config:
     activate:
       on-profile: cluster
-server:
-  port: 8080
+  datasource:
+    url: jdbc:mysql://mysql-primary-headless:3306/mydb
+    username: user
+    password: password
+  kafka:
+    bootstrap-servers: kafka-headless:9092
+    topics: market_topic
 app:
   client-service-url: client-app-service

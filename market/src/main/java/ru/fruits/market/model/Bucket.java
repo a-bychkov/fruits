@@ -1,23 +1,24 @@
 package ru.fruits.market.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name="fruits")
+@Table(name="buckets")
 @Data
 @NoArgsConstructor
-public class Fruit {
+public class Bucket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,8 +26,7 @@ public class Fruit {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "bucket_id", nullable=false)
-    @JsonBackReference //работает в паре с @JsonManagedReference
-    private Bucket bucket;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "bucket")
+    @JsonManagedReference //позволяет избежать рекурсии при десериализации объекта
+    private List<Fruit> fruits = new ArrayList<>();
 }

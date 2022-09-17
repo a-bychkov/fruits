@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: market-app
-          image: abychkov117/market-app:1.5
+          image: abychkov117/market-app:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
 ---
