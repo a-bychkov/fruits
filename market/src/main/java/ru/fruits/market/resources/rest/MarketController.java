@@ -31,7 +31,7 @@ public class MarketController {
     @GetMapping(value = "/produce")
     public ResponseEntity<?> sendToKafka(@RequestParam("message") String message) {
         Stream.of(topics).forEach(topic -> {
-            log.info("Send message to kafka topic {}", topic);
+            log.info("Send message to kafka topic: {}", topic);
             kafkaTemplate.send(topic, message);
         });
         return ResponseEntity.ok("Ok");

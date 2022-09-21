@@ -33,5 +33,19 @@ spring:
   kafka:
     bootstrap-servers: kafka-headless:9092
     topics: market_topic
+    security:
+      protocol: SSL
+    properties:
+      #Server host name verification is disabled by setting ssl.endpoint.identification.algorithm to an empty string
+      ssl:
+        endpoint:
+          identification:
+            algorithm:
+    ssl:
+      trust-store-location: file:/var/kafka/kafka.truststore.jks
+      trust-store-password: password
+      key-store-location: file:/var/kafka/kafka-0.keystore.jks
+      key-store-password: password
+      key-password: password
 app:
   client-service-url: client-app-service

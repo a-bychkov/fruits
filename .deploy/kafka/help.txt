@@ -1,0 +1,24 @@
+#CN for keystore (CN = service domain name)
+kafka-headless.default.svc.cluster.local
+
+#create cert
+keytool -keystore kafka-0.keystore.jks -alias localhost -validity 365 -genkey -keyalg RSA
+
+#create own certificate authority center
+openssl req -new -x509 -keyout ca-key -out ca-cert -days 365 -subj "/CN=local-security-CA"
+
+#export certificate from keystore
+keytool -keystore kafka-0.keystore.jks -alias localhost -certreq -file cert-file
+
+#sign certificate by local authority center
+openssl x509 -req -CA ca-cert -CAkey ca-key -in cert-file -out cert-signed -days 365 -CAcreateserial -passin pass:password
+
+#import back to keystore signed certifite and authority center certificate
+keytool -keystore kafka-0.keystore.jks -alias CARoot -import -file ca-cert
+keytool -keystore kafka-0.keystore.jks -alias localhost -import -file cert-signed
+
+#create truststore
+keytool -keystore kafka.truststore.jks -alias CARoot -import -file ca-cert
+
+#create secret with keystore & truststore in kubernetes
+kubectl create secret generic kafka-tls-0 --from-file=./kafka.truststore.jks --from-file=kafka.keystore.jks=./kafka-0.keystore.jks

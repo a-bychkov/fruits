@@ -9,6 +9,9 @@ WORKDIR /opt/app
 #cp target/client-<ver>.jar /opt/app/app.jar
 COPY ${JAR_FILE} app.jar
 
+#copy certificates for kafka ssl work
+COPY src/main/resources/kafka/ssl/ /var/kafka/
+
 EXPOSE 8080/tcp
 
 #java -jar /opt/app/app.jar

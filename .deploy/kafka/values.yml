@@ -1,9 +1,17 @@
 provisioning:
-    enable: true
-    topics:
+  enable: true
+  topics:
     - name: market_topic
       partitions: 1
       replicationFactor: 1
       config:
         max.message.bytes: 64000
-        flush.messages: 1        
+        flush.messages: 1
+auth:
+  clientProtocol: tls
+  interBrokerProtocol: tls
+  tls:
+    type: jks
+    existingSecrets: [ "kafka-tls-0" ]
+    password: password
+    endpointIdentificationAlgorithm:

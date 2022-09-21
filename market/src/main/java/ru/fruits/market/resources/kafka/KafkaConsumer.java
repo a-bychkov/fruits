@@ -16,10 +16,10 @@ public class KafkaConsumer {
     public void consume(ConsumerRecord<String, String> payload){
         String topic = topics[0];
 
-        log.info("Received message from kafka topic {}", topic);
-        log.info("key: {}", payload.key());
+        log.info("Received message from kafka topic: {}", topic);
+        log.info("Key: {}", payload.key());
         log.info("Headers: {}", payload.headers());
-        log.info("Partion: {}", payload.partition());
-        log.info("Order: {}", payload.value());
+        log.info("Partition: {}", payload.partition());
+        log.info("Message: {}", payload.value());
     }
 }
