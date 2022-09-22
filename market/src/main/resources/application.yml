@@ -4,9 +4,9 @@ spring:
   application:
     name: market-app
   datasource:
-    url: jdbc:mysql://localhost:3306/mydb
-    username: user
-    password: password
+    url: jdbc:mysql://${DATABASE_URI:localhost}:3306/mydb
+    username: ${username:user}
+    password: ${password:password}
   jpa:
     database: MYSQL
     show-sql: true
@@ -26,10 +26,6 @@ spring:
   config:
     activate:
       on-profile: cluster
-  datasource:
-    url: jdbc:mysql://mysql-primary-headless:3306/mydb
-    username: user
-    password: password
   kafka:
     bootstrap-servers: kafka-headless:9092
     topics: market_topic
