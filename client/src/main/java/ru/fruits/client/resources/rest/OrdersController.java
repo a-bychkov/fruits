@@ -24,7 +24,6 @@ import java.util.List;
 @RequestMapping("/orders")
 @Slf4j
 public class OrdersController {
-
     @Autowired
     private ConfigProperties properties;
 
@@ -73,23 +72,22 @@ public class OrdersController {
 
     /**
      * Call to external Market service.
+     *
      * @return response as String
      */
     private String externalCallToMarketService() {
-        String restResource = "fruits";
-        String fruitName = "Apple";
-        int fruitAmount = 2;
+        String restResource = "produce";
+        String queryParam = "some";
 
-        String marketServiceUrl = "http://" + properties.getMarketServiceUrl() + "/buy/" + restResource;
+        String marketServiceUrl = "http://" + properties.getMarketServiceUrl() + "/api/v1/catalog/" + restResource;
 
         //Add query parameters
         URI uri = UriComponentsBuilder.fromUriString(marketServiceUrl)
-                .queryParam("name", fruitName)
-                .queryParam("amount", fruitAmount)
+                .queryParam("message", queryParam)
                 .buildAndExpand()
                 .toUri();
 
-        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.POST, null, String.class);
+        ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
         return response.getBody();
     }
 }

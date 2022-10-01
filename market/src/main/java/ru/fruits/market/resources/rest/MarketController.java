@@ -1,7 +1,5 @@
 package ru.fruits.market.resources.rest;
 
-import java.util.stream.Stream;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.fruits.market.model.Bucket;
 import ru.fruits.market.service.BucketsService;
 import ru.fruits.market.service.FruitsService;
+
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/v1/catalog")
