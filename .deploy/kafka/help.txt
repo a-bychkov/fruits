@@ -1,3 +1,4 @@
+#Create certificates for SSL work
 #CN for keystore (CN = service domain name)
 kafka-headless.default.svc.cluster.local
 
