@@ -6,7 +6,6 @@ import ru.fruits.client.entity.Order;
 
 @Repository
 public interface OrdersRepository extends JpaRepository<Order, Long>{
-
     Order findByName(String orderName);
 
     void deleteByName(String orderName);
