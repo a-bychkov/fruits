@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/api/v1/orders")
 @Slf4j
 public class OrdersController {
     @Autowired
@@ -75,6 +75,7 @@ public class OrdersController {
      *
      * @return response as String
      */
+    @GetMapping("/external")
     private String externalCallToMarketService() {
         String restResource = "produce";
         String queryParam = "some";
