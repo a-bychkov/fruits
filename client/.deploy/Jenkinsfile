@@ -26,7 +26,7 @@ pipeline{
         stage('Push image to Dockerhub'){
             steps{
                 echo "=====>Pushing docker image to Dockerhub registry"
-                sh "echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin"
+                sh 'echo $dockerhub_PSW | docker login -u $dockerhub_USR --password-stdin'
                 sh "docker push abychkov117/client-app:latest"
             }
         }
