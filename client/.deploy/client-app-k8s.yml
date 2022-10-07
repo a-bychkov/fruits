@@ -43,7 +43,7 @@ kind: ConfigMap
 metadata:
   name: client-app-configmap
 data:
-  DATABASE_URI: mysql-primary-headless
+  DATABASE_URI: mysql-headless
 ---
 apiVersion: v1
 kind: Secret

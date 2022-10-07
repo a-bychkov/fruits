@@ -2,6 +2,9 @@ auth:
   username: user
   password: password
   database: mydb
-architecture: replication
-secondary:
-  replicaCount: 1
+architecture: standalone
+
+#Replication settings:
+#architecture: replication
+#secondary:
+#  replicaCount: 1

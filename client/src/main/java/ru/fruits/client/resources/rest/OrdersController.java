@@ -47,7 +47,6 @@ public class OrdersController {
         log.info("Getting order {}", name);
 
         Order order = orderService.getOrderByName(name);
-        order.setMarketResponse(externalCallToMarketService());
 
         return ResponseEntity.ok(order);
     }

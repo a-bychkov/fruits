@@ -39,7 +39,7 @@ pipeline{
         stage('Install helm charts'){
             steps{
                 echo "=====>Installing helm Mysql chart"
-                sh "cd ./.deploy/mysql && helm install -f values.yml mysql bitnami/mysql"
+                sh "cd ./.deploy/mysql && helm upgrade --install -f values.yml mysql bitnami/mysql"
             }
         }
     }

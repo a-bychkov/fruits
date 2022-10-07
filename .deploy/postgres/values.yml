@@ -1,9 +1,9 @@
 global:
   postgresql:
     auth:
-      username: testuser
-      password: testpass
-      database: testdb
+      username: user
+      password: password
+      database: mydb
 primary:
   persistence:
     existingClaim: postgres-pvc
