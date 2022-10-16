@@ -1,4 +1,4 @@
-insert into orders (name)
+insert into orders (name, price)
     values
-        ("test_order_1"),
-        ("test_order_2");
+        ("test_order_1", 30),
+        ("test_order_2", 50);

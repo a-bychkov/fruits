@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 20221013_1
+      author: abychkov
+      comment: "Update orders table"
+      changes:
+        - addColumn:
+            tableName: orders
+            columns:
+              - column:
+                  name: price
+                  type: int
