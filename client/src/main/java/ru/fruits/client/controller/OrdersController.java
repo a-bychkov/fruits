@@ -1,4 +1,4 @@
-package ru.fruits.client.resources.rest;
+package ru.fruits.client.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
