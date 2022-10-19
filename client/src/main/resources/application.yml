@@ -5,8 +5,8 @@ spring:
     name: client-app
   datasource:
     url: jdbc:mysql://${DATABASE_URI:localhost}:3306/mydb
-    username: ${username:user}
-    password: ${password:password}
+    username: ${DB_USERNAME:user}
+    password: ${DB_PASSWORD:password}
   jpa:
     database: MYSQL
     show-sql: true

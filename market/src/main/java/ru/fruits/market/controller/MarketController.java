@@ -1,4 +1,4 @@
-package ru.fruits.market.resources.rest;
+package ru.fruits.market.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,9 +22,11 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 @Slf4j
 public class MarketController {
+
     private final FruitsService fruitsService;
     private final BucketsService bucketsService;
     private final KafkaTemplate<String, String> kafkaTemplate;
+
     @Value("${spring.kafka.topics}")
     private String[] topics;
 

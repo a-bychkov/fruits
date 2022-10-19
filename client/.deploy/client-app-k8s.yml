@@ -20,11 +20,20 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
+          env:
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: client-app-secret
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: client-app-secret
+                  key: password
           envFrom:
             - configMapRef:
                 name: client-app-configmap
-            - secretRef:
-                name: client-app-secret
 ---
 apiVersion: v1
 kind: Service

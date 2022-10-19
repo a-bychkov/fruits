@@ -1,5 +1,8 @@
 package ru.fruits.client.controller;
 
+import java.net.URI;
+import java.util.List;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -17,13 +20,11 @@ import ru.fruits.client.config.ConfigProperties;
 import ru.fruits.client.entity.Order;
 import ru.fruits.client.service.OrderService;
 
-import java.net.URI;
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/orders")
 @Slf4j
 public class OrdersController {
+
     @Autowired
     private ConfigProperties properties;
 
@@ -83,9 +84,9 @@ public class OrdersController {
 
         //Add query parameters
         URI uri = UriComponentsBuilder.fromUriString(marketServiceUrl)
-                .queryParam("message", queryParam)
-                .buildAndExpand()
-                .toUri();
+            .queryParam("message", queryParam)
+            .buildAndExpand()
+            .toUri();
 
         ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
         return response.getBody();
