@@ -3,6 +3,7 @@ package ru.fruits.client.controller;
 import java.net.URI;
 import java.util.List;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -33,6 +34,14 @@ public class OrdersController {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Timed("gettingStub")
+    @GetMapping("/stub")
+    public ResponseEntity<?> getStubResponse() {
+        log.info("Getting stub response");
+
+        return ResponseEntity.ok("This is stub!");
+    }
 
     @GetMapping
     public ResponseEntity<?> getOrders() {

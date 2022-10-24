@@ -1,13 +1,8 @@
 package ru.fruits.client.service;
 
-import static ru.fruits.client.entity.QOrder.order;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.querydsl.core.types.Predicate;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -18,14 +13,28 @@ import ru.fruits.client.entity.Order;
 import ru.fruits.client.repository.OrdersRepository;
 import ru.fruits.client.util.QPredicates;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static ru.fruits.client.entity.QOrder.order;
+
 @Service
 @Slf4j
 public class OrderService {
 
-    @Autowired
     private OrdersRepository ordersRepository;
+    private AtomicInteger invocationCount;
+
+    public OrderService(OrdersRepository ordersRepository, MeterRegistry meterRegistry) {
+        this.ordersRepository = ordersRepository;
+        invocationCount = new AtomicInteger();
+        meterRegistry.gauge("invocationCount", invocationCount);
+    }
 
     public List<Order> getOrders() {
+        invocationCount.set(invocationCount.incrementAndGet());
+
         return ordersRepository.findAll();
     }
 
