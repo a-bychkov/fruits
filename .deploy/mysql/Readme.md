@@ -1,3 +1,5 @@
-How to deploy:
+### How to deploy:
 
-#todo -> add description
+helm repo update bitnami
+
+helm install -f .\values.yml mysql bitnami/mysql
