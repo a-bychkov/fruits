@@ -2,18 +2,22 @@ package ru.fruits.client.controller;
 
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Stream;
 
 import io.micrometer.core.annotation.Timed;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,26 +27,28 @@ import ru.fruits.client.service.OrderService;
 
 @RestController
 @RequestMapping("/api/v1/orders")
+@RequiredArgsConstructor
 @Slf4j
 public class OrdersController {
 
-    @Autowired
-    private ConfigProperties properties;
+    private final ConfigProperties properties;
+    private final OrderService orderService;
+    private final RestTemplate restTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    @Value("${spring.kafka.topics}")
+    private String[] topics;
 
-    @Autowired
-    private OrderService orderService;
+    @GetMapping(value = "/produce")
+    public ResponseEntity<?> sendToKafka(@RequestParam("message") String message) {
+        Stream.of(topics).forEach(topic -> {
+            log.info("Send message to kafka topic {}", topic);
 
-    @Autowired
-    private RestTemplate restTemplate;
-
-    @Timed("gettingStub")
-    @GetMapping("/stub")
-    public ResponseEntity<?> getStubResponse() {
-        log.info("Getting stub response");
-
-        return ResponseEntity.ok("This is stub!");
+            kafkaTemplate.send(topic, message);
+        });
+        return ResponseEntity.ok("Ok");
     }
 
+    @Timed("gettingOrders")
     @GetMapping
     public ResponseEntity<?> getOrders() {
         log.info("Getting orders");

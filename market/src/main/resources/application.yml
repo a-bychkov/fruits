@@ -22,6 +22,8 @@ spring:
 app:
   client-service-url: localhost:8080
 ---
+app:
+  client-service-url: client-app-service
 server:
   port: 8080
 spring:
@@ -47,5 +49,3 @@ spring:
       key-password: password
   zipkin:
     base-url: http://zipkin-service:9411/
-app:
-  client-service-url: client-app-service
