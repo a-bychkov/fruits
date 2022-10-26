@@ -1,8 +1,8 @@
 ### How to deploy:
 
-minikube addons enable ingress
+enable services external access in kubernetes:  
+- kubectl apply -f .\ingress.yml
+- minikube addons enable ingress
+- minikube tunnel
 
-minikube tunnel
-
-#testing connection:
-https://localhost/client/api/v1/orders/stub
+testing connection > https://localhost/client/actuator

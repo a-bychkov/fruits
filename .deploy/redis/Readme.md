@@ -1,3 +1,3 @@
 ### How to deploy:
 
-#todo -> add description
+kubectl apply -f .\redis-k8s.yml

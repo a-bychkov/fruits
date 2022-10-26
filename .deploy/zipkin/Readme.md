@@ -1,3 +1,9 @@
 ### How to deploy:
 
-#todo -> add description
+- build docker image:  
+  docker build -t abychkov117/zipkin:latest .  
+  docker push abychkov117/zipkin:latest
+
+
+- run in kubernetes:  
+  kubectl apply -f .\zipkin-k8s.yml
