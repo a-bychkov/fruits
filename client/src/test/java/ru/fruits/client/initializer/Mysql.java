@@ -11,15 +11,15 @@ import org.testcontainers.containers.MySQLContainer;
  */
 @UtilityClass
 public class Mysql {
-    public static final MySQLContainer<?> dbContainer = new MySQLContainer<>("mysql:8.0");
+    public static final MySQLContainer<?> dbContainer = new MySQLContainer<>("mysql:latest");
 
     public static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(ConfigurableApplicationContext applicationContext) {
             TestPropertyValues.of(
-                "spring.datasource.url=" + dbContainer.getJdbcUrl(),
-                "spring.datasource.username=" + dbContainer.getUsername(),
-                "spring.datasource.password=" + dbContainer.getPassword()
+                    "spring.datasource.url=" + dbContainer.getJdbcUrl(),
+                    "spring.datasource.username=" + dbContainer.getUsername(),
+                    "spring.datasource.password=" + dbContainer.getPassword()
             ).applyTo(applicationContext);
         }
     }

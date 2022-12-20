@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fruits.client.dto.OrderFilter;
 import ru.fruits.client.entity.Order;
-import ru.fruits.client.repository.OrdersRepository;
+import ru.fruits.client.repository.OrderRepository;
 import ru.fruits.client.util.QPredicates;
 
 import java.util.ArrayList;
@@ -22,11 +22,10 @@ import static ru.fruits.client.entity.QOrder.order;
 @Service
 @Slf4j
 public class OrderService {
-
-    private OrdersRepository ordersRepository;
+    private OrderRepository ordersRepository;
     private AtomicInteger invocationCount;
 
-    public OrderService(OrdersRepository ordersRepository, MeterRegistry meterRegistry) {
+    public OrderService(OrderRepository ordersRepository, MeterRegistry meterRegistry) {
         this.ordersRepository = ordersRepository;
         invocationCount = new AtomicInteger();
         meterRegistry.gauge("invocationCount", invocationCount);
@@ -42,9 +41,9 @@ public class OrderService {
         List<Order> returnValue = new ArrayList<>();
 
         Predicate predicate = QPredicates.builder()
-            .add(filter.getName(), order.name::containsIgnoreCase)
-            .add(filter.getPrice(), order.price::goe)
-            .buildAnd();
+                .add(filter.getName(), order.name::containsIgnoreCase)
+                .add(filter.getPrice(), order.price::goe)
+                .buildAnd();
 
         Iterable<Order> result = ordersRepository.findAll(predicate);
         result.forEach(returnValue::add);
