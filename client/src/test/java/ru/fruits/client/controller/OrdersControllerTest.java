@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -19,13 +20,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql("/sql/data.sql")
 @AutoConfigureMockMvc
 class OrdersControllerTest extends IntegrationTestBase {
-
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser
     @SneakyThrows
     void getOrders() {
         MvcResult response = mockMvc.perform(get("/api/v1/orders/")

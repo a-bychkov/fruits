@@ -11,16 +11,15 @@ import java.util.function.Function;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class QPredicates {
-
     private List<Predicate> predicates = new ArrayList<>();
 
     /**
-     * Added new predicate to predicates list.
+     * Add new predicate to predicates list.
      *
-     * @param object what corresponds with entity field
+     * @param object   what corresponds with entity field
      * @param function what applies to object, like '.containsIgnoreCase'
-     * @return this
      * @param <T>
+     * @return this
      */
     public <T> QPredicates add(T object, Function<T, Predicate> function) {
         if (object != null) {

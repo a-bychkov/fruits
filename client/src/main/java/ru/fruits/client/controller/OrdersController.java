@@ -1,9 +1,5 @@
 package ru.fruits.client.controller;
 
-import java.net.URI;
-import java.util.List;
-import java.util.stream.Stream;
-
 import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,26 +7,23 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.fruits.client.config.ConfigProperties;
 import ru.fruits.client.entity.Order;
 import ru.fruits.client.service.OrderService;
 
+import java.net.URI;
+import java.util.List;
+import java.util.stream.Stream;
+
 @RestController
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
 @Slf4j
 public class OrdersController {
-
     private final ConfigProperties properties;
     private final OrderService orderService;
     private final RestTemplate restTemplate;
@@ -67,6 +60,7 @@ public class OrdersController {
         return ResponseEntity.ok(order);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping
     public ResponseEntity<?> saveOrder(@RequestBody Order order) {
         log.info("Saving order");
@@ -99,9 +93,9 @@ public class OrdersController {
 
         //Add query parameters
         URI uri = UriComponentsBuilder.fromUriString(marketServiceUrl)
-            .queryParam("message", queryParam)
-            .buildAndExpand()
-            .toUri();
+                .queryParam("message", queryParam)
+                .buildAndExpand()
+                .toUri();
 
         ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
         return response.getBody();
