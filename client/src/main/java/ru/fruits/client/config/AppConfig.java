@@ -29,6 +29,7 @@ public class AppConfig {
                 .build();
     }
 
+    // security requirements
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
