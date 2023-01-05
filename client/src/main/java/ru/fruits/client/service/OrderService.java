@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.fruits.client.dto.OrderFilter;
 import ru.fruits.client.entity.Order;
+import ru.fruits.client.repository.OrderHashRepository;
 import ru.fruits.client.repository.OrderRepository;
 import ru.fruits.client.util.QPredicates;
 
@@ -24,16 +24,17 @@ import static ru.fruits.client.entity.QOrder.order;
 public class OrderService {
     private OrderRepository ordersRepository;
     private AtomicInteger invocationCount;
+    private OrderHashRepository orderHashRepository;
 
-    public OrderService(OrderRepository ordersRepository, MeterRegistry meterRegistry) {
+    public OrderService(OrderRepository ordersRepository, MeterRegistry meterRegistry, OrderHashRepository orderHashRepository) {
         this.ordersRepository = ordersRepository;
         invocationCount = new AtomicInteger();
         meterRegistry.gauge("invocationCount", invocationCount);
+        this.orderHashRepository = orderHashRepository;
     }
 
     public List<Order> getOrders() {
         invocationCount.set(invocationCount.incrementAndGet());
-
         return ordersRepository.findAll();
     }
 
@@ -56,9 +57,25 @@ public class OrderService {
         return ordersRepository.findByName(name);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public Order saveOrder(Order order) {
-        return ordersRepository.save(order);
+        // save new order to db
+        ordersRepository.save(order);
+
+        // save order to cache
+        saveOrderIntoCache(order);
+
+        return order;
+    }
+
+    /**
+     * Put entity into cache.
+     *
+     * @param order order itself
+     */
+    @Transactional
+    private Order saveOrderIntoCache(Order order) {
+        return orderHashRepository.save(order);
     }
 
     @Transactional(timeout = 5)
