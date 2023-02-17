@@ -9,5 +9,5 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class ConfigProperties {
 
-    private String clientServiceUrl;
+  private String clientServiceUrl;
 }
