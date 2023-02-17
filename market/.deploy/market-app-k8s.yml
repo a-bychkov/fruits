@@ -20,11 +20,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
-          envFrom:
-            - configMapRef:
-                name: market-app-configmap
-            - secretRef:
-                name: market-app-secret
 ---
 apiVersion: v1
 kind: Service
@@ -37,19 +32,3 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8080
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: market-app-configmap
-data:
-  DATABASE_URI: mysql-primary-headless
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: market-app-secret
-type: kubernetes.io/basic-auth
-stringData:
-  username: user
-  password: password
