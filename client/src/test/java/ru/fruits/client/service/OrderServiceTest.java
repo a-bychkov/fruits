@@ -32,6 +32,6 @@ class OrderServiceTest extends IntegrationTestBase {
         List<Order> orders = orderService.getOrders(filter);
 
         assertEquals(1, orders.size());
-        assertEquals("test_order_2", orders.get(0).getName());
+        assertEquals("test_order_1", orders.get(0).getName());
     }
 }

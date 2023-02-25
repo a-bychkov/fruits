@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.fruits.client.config.ConfigProperties;
+import ru.fruits.client.dto.OrderFilter;
 import ru.fruits.client.entity.Order;
 import ru.fruits.client.service.OrderService;
 
@@ -47,6 +48,16 @@ public class OrdersController {
         log.info("Getting orders");
 
         List<Order> orders = orderService.getOrders();
+
+        return ResponseEntity.ok(orders);
+    }
+
+    @Timed("gettingOrdersWithFilter")
+    @PostMapping("/filter")
+    public ResponseEntity<?> getOrdersWithFilter(@RequestBody OrderFilter filter) {
+        log.info("Getting orders with filter");
+
+        List<Order> orders = orderService.getOrders(filter);
 
         return ResponseEntity.ok(orders);
     }

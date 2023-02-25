@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class OrderFilter {
 
     private String name;
-    private int price;
+    private Integer price;
 }
