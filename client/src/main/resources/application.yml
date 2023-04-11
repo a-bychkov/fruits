@@ -12,59 +12,13 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        # create fulltext search index in elasticsearch
+        search:
+          backend:
+            hosts: localhost:9200
   liquibase:
     change-log: classpath:db/changelog/liquibase-changelog.yml
-  kafka:
-    bootstrap-servers: localhost:9092
-    topics: client_topic
-  zipkin:
-    base-url: http://localhost:9411/
-  # for @Cacheable annotation
-  cache:
-    type: redis
-    redis:
-      time-to-live: ${spring.redis.ttl}
-  redis:
-    host: localhost
-    port: 6379
-    ttl: 60000
 app:
   market-service-url: localhost:8081
----
-app:
-  market-service-url: market-app-service
-spring:
-  config:
-    activate:
-      on-profile: cluster
-  kafka:
-    bootstrap-servers: kafka-headless:9092
-    topics: client_topic
-    security:
-      protocol: SSL
-    properties:
-      #Server host name verification is disabled by setting ssl.endpoint.identification.algorithm to an empty string
-      ssl:
-        endpoint:
-          identification:
-            algorithm:
-    ssl:
-      trust-store-location: file:/var/kafka/kafka.truststore.jks
-      trust-store-password: password
-      key-store-location: file:/var/kafka/kafka-0.keystore.jks
-      key-store-password: password
-      key-password: password
-  zipkin:
-    base-url: http://zipkin-service:9411/
-  redis:
-    host: redis-service
-#prometheus:
-management:
-  endpoints.web.exposure.include: 'prometheus, health'
-  metrics:
-    export:
-      prometheus:
-        enabled: true
-    distribution:
-      percentiles-histogram:
-        "[http.server.requests]": true

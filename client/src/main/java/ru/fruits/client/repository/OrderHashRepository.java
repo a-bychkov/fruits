@@ -2,6 +2,7 @@ package ru.fruits.client.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 import ru.fruits.client.entity.Order;
@@ -11,9 +12,11 @@ import java.util.concurrent.TimeUnit;
 
 @Repository
 @RequiredArgsConstructor
+@ConditionalOnProperty(prefix = "spring", name = "redis")
 public class OrderHashRepository {
     public final String HASH_KEY = "Order";
     private final RedisTemplate redisTemplate;
+
     @Value("${spring.redis.ttl}")
     private long ttl;
 

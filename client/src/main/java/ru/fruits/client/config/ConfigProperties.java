@@ -8,6 +8,5 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "app")
 @Data
 public class ConfigProperties {
-
     private String marketServiceUrl;
 }

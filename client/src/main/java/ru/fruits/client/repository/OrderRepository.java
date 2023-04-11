@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository;
 import ru.fruits.client.entity.Order;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
+public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order>,
+        CustomizedOrderRepository {
     Order findByName(String orderName);
 
     void deleteByName(String orderName);

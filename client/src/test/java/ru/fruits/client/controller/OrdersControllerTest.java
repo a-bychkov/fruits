@@ -1,20 +1,27 @@
 package ru.fruits.client.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDateTime;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import ru.fruits.client.IntegrationTestBase;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.fruits.client.entity.Order;
 import ru.fruits.client.service.OrderService;
+import ru.fruits.client.testcontainers.ClientElasticsearchContainer;
+import ru.fruits.client.testcontainers.ClientMysqlContainer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.times;
@@ -22,15 +29,34 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
 @Sql("/sql/data.sql")
 @AutoConfigureMockMvc
-class OrdersControllerTest extends IntegrationTestBase {
+@Testcontainers
+class OrdersControllerTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
     @SpyBean
     OrderService orderService;
+
+    @Container
+    static ElasticsearchContainer elasticsearchContainer = new ClientElasticsearchContainer();
+    @Container
+    static MySQLContainer mysqlContainer = new ClientMysqlContainer();
+
+    @BeforeAll
+    static void setUp() {
+        elasticsearchContainer.start();
+        mysqlContainer.start();
+    }
+
+    @AfterAll
+    static void tearDown() {
+        elasticsearchContainer.stop();
+        mysqlContainer.stop();
+    }
 
     @Test
     @WithMockUser
@@ -47,6 +73,6 @@ class OrdersControllerTest extends IntegrationTestBase {
         // then
         verify(orderService, times(1)).getOrders();
         assertEquals(2, orders.length);
-        assertEquals("test_order_2", orders[1].getName());
+        assertEquals("another test order", orders[1].getName());
     }
 }

@@ -14,6 +14,8 @@ import ru.fruits.client.repository.OrderHashRepository;
 import ru.fruits.client.repository.OrderRepository;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -23,11 +25,13 @@ public class OrderService {
     private AtomicInteger invocationCount;
     private OrderHashRepository orderHashRepository;
 
-    public OrderService(OrderRepository ordersRepository, MeterRegistry meterRegistry, OrderHashRepository orderHashRepository) {
+    public OrderService(OrderRepository ordersRepository,
+                        MeterRegistry meterRegistry,
+                        Optional<OrderHashRepository> orderHashRepository) {
         this.ordersRepository = ordersRepository;
         invocationCount = new AtomicInteger();
         meterRegistry.gauge("invocationCount", invocationCount);
-        this.orderHashRepository = orderHashRepository;
+        orderHashRepository.ifPresent(e -> { this.orderHashRepository = orderHashRepository.get();});
     }
 
     public List<Order> getOrders() {
@@ -41,6 +45,10 @@ public class OrderService {
                 .and(OrderSpecification.equalsPrice(filter.getPrice()));
 
         return ordersRepository.findAll(spec);
+    }
+
+    public List<Order> getOrderFullText(String name, int limit, int offset) {
+        return ordersRepository.search(name, limit, offset);
     }
 
     @Cacheable(value = "orders", key = "#name")
@@ -66,7 +74,10 @@ public class OrderService {
      */
     @Transactional
     private Order saveOrderIntoCache(Order order) {
-        return orderHashRepository.save(order);
+        if (Objects.nonNull(orderHashRepository)) {
+            orderHashRepository.save(order);
+        }
+        return order;
     }
 
     @Transactional(timeout = 5)
